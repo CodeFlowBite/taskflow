@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – Home</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- ─── HEADER ─────────────────────────── -->
+  <header class="header">
+    <div class="header__left">
+      <h1>DASH<span>BOARD</span></h1>
+      <p class="header__greeting">Bienvenido, revisa tus proyectos y tareas pendientes.</p>
+    </div>
+    <div class="header__date" id="headerDate"></div>
+  </header>
+
+  <!-- ─── RESUMEN (tarjetas superiores) ──── -->
+  <section class="summary-row">
+
+    <div class="summary-card summary-card--projects">
+      <p  class="summary-card__label">Proyectos</p>
+      <p  class="summary-card__number">{{ proyectos | length }}</p>
+      <p  class="summary-card__sub">Total registrados</p>
+    </div>
+
+    <div class="summary-card summary-card--tasks">
+      <p  class="summary-card__label">Tareas</p>
+      <p  class="summary-card__number">{{ tareas | length }}</p>
+      <p  class="summary-card__sub">Total registradas</p>
+    </div>
+
+    <!-- Proyectos pendientes (estado == "pendiente") -->
+    <div class="summary-card summary-card--pending-p">
+      <p  class="summary-card__label">Proyectos pendientes</p>
+      <p  class="summary-card__number">
+        {{ proyectos | selectattr('estado', 'equalto', 'pendiente') | list | length }}
+      </p>
+      <p  class="summary-card__sub">Sin iniciar aún</p>
+    </div>
+
+    <!-- Tareas pendientes (estado != "completada") -->
+    <div class="summary-card summary-card--pending-t">
+      <p  class="summary-card__label">Tareas pendientes</p>
+      <p  class="summary-card__number">
+        {{ tareas | rejectattr('estado', 'equalto', 'completada') | list | length }}
+      </p>
+      <p  class="summary-card__sub">Por completar</p>
+    </div>
+
+  </section>
+
+  <!-- ─── GRID PRINCIPAL ─────────────────── -->
+  <div class="content-grid">
+
+    <!-- ──── COLUMNA: PROYECTOS ──────────── -->
+    <div>
+      <div class="section-title">
+        <span class="section-title__dot section-title__dot--cyan"></span>
+        <h2>Proyectos</h2>
+        <span class="section-title__count">{{ proyectos | length }} total</span>
+      </div>
+
+      <div class="list-card">
+        {% if proyectos %}
+          {% for p in proyectos %}
+          <div class="proyecto-item">
+
+            <!-- Ícono según estado -->
+            <div class="proyecto-item__icon
+                        proyecto-item__icon--{{ 'pending' if p.estado == 'pendiente'
+                                                 else 'active' if p.estado == 'activo'
+                                                 else 'paused' }}">
+              {% if p.estado == 'pendiente' %}⏳
+              {% elif p.estado == 'activo'  %}🚀
+              {% else                       %}⏸️{% endif %}
+            </div>
+
+            <!-- Contenido -->
+            <div class="proyecto-item__body">
+              <p class="proyecto-item__name">{{ p.nombre }}</p>
+              <p class="proyecto-item__desc">{{ p.descripcion }}</p>
+
+              <div class="proyecto-item__meta">
+                <!-- Badge de estado -->
+                <span class="badge badge--{{ p.estado }}">
+                  <span class="badge__dot"></span>
+                  {{ p.estado | capitalize }}
+                </span>
+                <!-- Fecha de inicio -->
+                <span class="proyecto-item__date">📅 {{ p.fecha_inicio }}</span>
+              </div>
+            </div>
+
+          </div>
+          {% endfor %}
+
+        {% else %}
+          <div class="empty-state">
+            <div class="empty-state__icon">📂</div>
+            <p>No hay proyectos registrados.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ──── COLUMNA: TAREAS ─────────────── -->
+    <div>
+      <div class="section-title">
+        <span class="section-title__dot section-title__dot--amber"></span>
+        <h2>Tareas</h2>
+        <span class="section-title__count">{{ tareas | length }} total</span>
+      </div>
+
+      <div class="list-card">
+        {% if tareas %}
+          {% for t in tareas %}
+          <div class="tarea-item">
+
+            <!-- Checkbox decorativo -->
+            <div class="tarea-item__checkbox
+                        {% if t.estado == 'completada' %}tarea-item__checkbox--done{% endif %}">
+            </div>
+
+            <!-- Contenido -->
+            <div class="tarea-item__body">
+              <p class="tarea-item__title">{{ t.titulo }}</p>
+              <p class="tarea-item__desc">{{ t.descripcion }}</p>
+
+              <div class="tarea-item__meta">
+
+                <!-- Prioridad -->
+                <span class="badge badge--{{ t.prioridad | lower }}">
+                  <span class="badge__dot"></span>
+                  {{ t.prioridad | capitalize }}
+                </span>
+
+                <!-- Estado tarea -->
+                {% if t.estado == 'completada' %}
+                  <span class="badge badge--completada"><span class="badge__dot"></span>Completada</span>
+                {% elif t.estado == 'en progreso' %}
+                  <span class="badge badge--progreso"><span class="badge__dot"></span>En progreso</span>
+                {% else %}
+                  <span class="badge badge--todo"><span class="badge__dot"></span>Todo</span>
+                {% endif %}
+
+                <!-- Proyecto padre (si existe) -->
+                {% if t.proyecto_id %}
+                  <span class="badge badge--proyecto">🗂️ Proyecto {{ t.proyecto_id }}</span>
+                {% endif %}
+
+                <!-- Fecha límite -->
+                {% if t.fecha_limite %}
+                  <span class="tarea-item__deadline tarea-item__deadline--ok">📆 {{ t.fecha_limite }}</span>
+                {% endif %}
+
+              </div>
+            </div>
+
+          </div>
+          {% endfor %}
+
+        {% else %}
+          <div class="empty-state">
+            <div class="empty-state__icon">✅</div>
+            <p>No hay tareas registradas.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div><!-- /content-grid -->
+
+</div><!-- /dashboard -->
+
+<!-- ─── SCRIPT: fecha/hora en tiempo real ── -->
+<script>
+  (function () {
+    const el = document.getElementById('headerDate');
+
+    function meses(i) {
+      return ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+              'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][i];
+    }
+
+    function diasNom(i) {
+      return ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][i];
+    }
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function render() {
+      const d  = new Date();
+      const dia  = diasNom(d.getDay());
+      const mes  = meses(d.getMonth());
+      const fecha = d.getDate();
+      const anio  = d.getFullYear();
+      const h     = pad(d.getHours());
+      const m     = pad(d.getMinutes());
+      const s     = pad(d.getSeconds());
+
+      el.innerHTML =
+        `${dia}, ${fecha} de ${mes} de ${anio}<br>` +
+        `<strong>${h}:${m}:${s}</strong>`;
+    }
+
+    render();
+    setInterval(render, 1000);
+  })();
+</script>
+
+</body>
+</html>

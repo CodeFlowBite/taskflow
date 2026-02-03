@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nueva Tarea</title>
+
+  <!-- Base global (reset, variables, body, ambient bg, scrollbar) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  <!-- Estilos propios de este formulario -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='nueva_tarea.css') }}" />
+</head>
+<body>
+
+<div class="form-page">
+
+  <!-- ─── BREADCRUMB ───────────────────── -->
+  <nav class="breadcrumb">
+    <a href="/">Home</a>
+    <span class="breadcrumb__sep">›</span>
+    <a href="/tareas">Tareas</a>
+    <span class="breadcrumb__sep">›</span>
+    <span class="breadcrumb__current">Nueva Tarea</span>
+  </nav>
+
+  <!-- ─── HEADER ───────────────────────── -->
+  <header class="form-header">
+    <div class="form-header__left">
+      <h1>NUEVA <span>TAREA</span></h1>
+      <p class="form-header__sub">Completa los campos y crea tu tarea.</p>
+    </div>
+    <a href="/" class="btn-back">← Volver</a>
+  </header>
+
+  <!-- ─── MENSAJES FLASH de Flask ──────── -->
+  {% with mensajes = get_flashed_messages(with_categories=true) %}
+    {% if mensajes %}
+      {% for cat, msg in mensajes %}
+        <div class="flash flash--{{ cat }}">
+          <span class="flash__icon">
+            {% if cat == 'success' %}✓{% else %}⚠{% endif %}
+          </span>
+          {{ msg }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- ─── TARJETA DEL FORMULARIO ───────── -->
+  <div class="form-card">
+
+    -->
+    <form method="POST" id="formNuevaTarea" novalidate>
+
+      <!-- ── TÍTULO ──────────────────── -->
+      <div class="field" id="field-titulo">
+        <label class="field__label" for="titulo">
+          <span class="field__label-dot"></span>
+          Título
+          <span class="field__required">*</span>
+        </label>
+        <input
+          class="field__input"
+          type="text"
+          id="titulo"
+          name="titulo"
+          placeholder="Ej: Diseñar prototipo de landing page"
+          value="{{ request.form.get('titulo', '') }}"
+          autocomplete="off"
+        />
+        <p class="field__error-msg">Este campo es obligatorio.</p>
+      </div>
+
+      <!-- ── DESCRIPCIÓN ─────────────── -->
+      <div class="field" id="field-descripcion">
+        <label class="field__label" for="descripcion">
+          <span class="field__label-dot"></span>
+          Descripción
+        </label>
+        <textarea
+          class="field__textarea"
+          id="descripcion"
+          name="descripcion"
+          placeholder="Describe qué debe hacerse en esta tarea…"
+        >{{ request.form.get('descripcion', '') }}</textarea>
+      </div>
+      
+      <!-- ── Asignar ID del proyecto ─────────────── -->
+      <div class="field" id="field-proyecto">
+        <label class="field__label" for="proyecto_id">
+          <span class="field__label-dot"></span>
+          Proyecto
+        </label>
+        <textarea
+          class="field__textarea"
+          id="proyecto_id"
+          name="proyecto_id"
+          placeholder="ID del proyecto al que pertenece esta tarea…"
+        >{{ request.form.get('proyecto_id', '') }}</textarea>
+      </div>
+
+      <!-- ── FECHA LÍMITE ────────────── -->
+      <div class="field" id="field-fecha">
+        <label class="field__label" for="fecha_limite">
+          <span class="field__label-dot"></span>
+          Fecha límite
+        </label>
+        <input
+          class="field__input"
+          type="date"
+          id="fecha_limite"
+          name="fecha_limite"
+          value="{{ request.form.get('fecha_limite', '') }}"
+        />
+      </div>
+
+      <!-- ── PRIORIDAD ───────────────── -->
+      <div class="field" id="field-prioridad">
+        <label class="field__label" for="prioridad">
+          <span class="field__label-dot"></span>
+          Prioridad
+          <span class="field__required">*</span>
+        </label>
+
+        <!-- Select oculto visualmente pero funcional para el form -->
+        <div class="field__select-wrap">
+          <select class="field__select" id="prioridad" name="prioridad">
+            <option value=""          {% if not request.form.get('prioridad') %}selected{% endif %}>— Selecciona —</option>
+            <option value="alta"      {% if request.form.get('prioridad') == 'alta'    %}selected{% endif %}>Alta</option>
+            <option value="media"     {% if request.form.get('prioridad') == 'media'   %}selected{% endif %}>Media</option>
+            <option value="baja"      {% if request.form.get('prioridad') == 'baja'    %}selected{% endif %}>Baja</option>
+          </select>
+        </div>
+        <p class="field__error-msg">Selecciona una prioridad.</p>
+
+        <!-- Previa visual: los tres botones se sincronizan con el select -->
+        <div class="prioridad-preview" id="prioridadPreview">
+          <div class="prioridad-preview__item prioridad-preview__item--alta" data-valor="alta">
+            <span class="prioridad-preview__dot"></span>
+            <span class="prioridad-preview__label">Alta</span>
+          </div>
+          <div class="prioridad-preview__item prioridad-preview__item--media" data-valor="media">
+            <span class="prioridad-preview__dot"></span>
+            <span class="prioridad-preview__label">Media</span>
+          </div>
+          <div class="prioridad-preview__item prioridad-preview__item--baja" data-valor="baja">
+            <span class="prioridad-preview__dot"></span>
+            <span class="prioridad-preview__label">Baja</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── DIVISOR + BOTONES ──────── -->
+      <div class="form-divider"></div>
+
+      <div class="form-actions">
+        <a href="/" class="btn btn--ghost">Cancelar</a>
+        <button type="submit" class="btn btn--primary">
+          <span>+</span> Crear Tarea
+        </button>
+      </div>
+
+    </form>
+  </div><!-- /form-card -->
+
+</div><!-- /form-page -->
+
+<!-- ─── JS: validación front + sinc previa ── -->
+<script>
+(function () {
+  const form      = document.getElementById('formNuevaTarea');
+  const select    = document.getElementById('prioridad');
+  const previewEl = document.getElementById('prioridadPreview');
+  const items     = previewEl.querySelectorAll('.prioridad-preview__item');
+
+  // ── sinc select ↔ previa visual ──────────
+  function syncPreview(valor) {
+    items.forEach(item => {
+      item.classList.toggle('active', item.dataset.valor === valor);
+    });
+  }
+
+  // Al cargar: si hay valor previo (tras error de server), marca la previa
+  syncPreview(select.value);
+
+  // Cuando cambia el select → actualiza previa
+  select.addEventListener('change', () => syncPreview(select.value));
+
+  // Cuando se clickea un item de previa → actualiza select
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      select.value = item.dataset.valor;
+      syncPreview(item.dataset.valor);
+      // limpia error si estaba
+      document.getElementById('field-prioridad').classList.remove('field--error');
+    });
+  });
+
+  // ── Validación client-side antes de enviar ──
+  form.addEventListener('submit', function (e) {
+    let ok = true;
+
+    // Título obligatorio
+    const titulo = document.getElementById('titulo');
+    const fieldTitulo = document.getElementById('field-titulo');
+    if (!titulo.value.trim()) {
+      fieldTitulo.classList.add('field--error');
+      ok = false;
+    } else {
+      fieldTitulo.classList.remove('field--error');
+    }
+
+    // Prioridad obligatoria
+    const fieldPrioridad = document.getElementById('field-prioridad');
+    if (!select.value) {
+      fieldPrioridad.classList.add('field--error');
+      ok = false;
+    } else {
+      fieldPrioridad.classList.remove('field--error');
+    }
+
+    if (!ok) e.preventDefault();
+  });
+
+  // Limpia error al escribir
+  document.getElementById('titulo').addEventListener('input', function () {
+    if (this.value.trim()) {
+      document.getElementById('field-titulo').classList.remove('field--error');
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>

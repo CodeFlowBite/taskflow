@@ -1,5 +1,5 @@
 import sqlite3
-from modelos import Tarea, Proyecto
+from src.modelos import Tarea, Proyecto
 import os
 
 DATABASE_NAME = 'tareas.db'
@@ -70,7 +70,7 @@ class DBManager:
         conn.close()
         return tarea
 
-    def obtener_proyectos(self):
+    def obtener_proyectos(self, to_dict=False):
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM proyectos")
@@ -82,9 +82,48 @@ class DBManager:
                      id=fila['id'], estado=fila['estado'])
             for fila in filas
         ]
+        if to_dict:
+            proyectos = [p.to_dict() for p in proyectos]
         return proyectos
 
+    def obtener_tareas(self, estado=None, to_dict=False):
+            """
+            Obtiene tareas de la DB. Aplica un algoritmo de ordenamiento y filtrado.
+            """
+            conn = get_connection()
+            cursor = conn.cursor()
+            
+            sql = "SELECT * FROM tareas"
+            params = []
+            
+            # Algoritmo de Filtrado: Si se pasa un estado, filtramos
+            if estado:
+                sql += " WHERE estado = ?"
+                params.append(estado)
 
+            # Algoritmo de Ordenamiento: Ordenamos por fecha límite (ASCENDENTE)
+            sql += " ORDER BY fecha_limite ASC" 
+
+            cursor.execute(sql, params)
+            filas = cursor.fetchall()
+            conn.close()
+            
+            # Convertimos filas SQL (diccionarios gracias a row_factory) a objetos Tarea (POO)
+            tareas = []
+            for fila in filas:
+                # Recreamos el objeto Tarea a partir de los datos de la DB
+                t = Tarea(
+                    titulo=fila['titulo'], 
+                    fecha_limite=fila['fecha_limite'],
+                    prioridad=fila['prioridad'],
+                    proyecto_id=fila['proyecto_id'],
+                    descripcion=fila['descripcion'],
+                    id=fila['id'],
+                    estado=fila['estado']
+                )
+                if to_dict: tareas.append(t.to_dict())
+                else: tareas.append(t)
+            return tareas
 
 if __name__ == '__main__':
     # Bloque de prueba para la clase
@@ -108,3 +147,7 @@ if __name__ == '__main__':
 
     tarea_creada = manager.crear_tarea(tarea_prueba)
     print(f"Tarea creada y ID asignado: {tarea_creada.id}")
+    tareas_pendientes = manager.obtener_tareas(estado="Pendiente")
+    print(f"Tareas pendientes obtenidas: {len(tareas_pendientes)}")
+    proyectos_pendientes = manager.obtener_proyectos()
+    print(f"Proyectos obtenidos: {proyectos_pendientes}")

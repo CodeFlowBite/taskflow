@@ -1,0 +1,475 @@
+/* ============================================
+   NUEVA TAREA — estilos de formulario
+   Importa el base styles.css (reset, variables,
+   header, body, scrollbar, ambient bg, etc.)
+   Este archivo solo agrega lo propio del form.
+   ============================================ */
+
+/* ============================================
+   CONTENEDOR CENTRAL
+   ============================================ */
+.form-page {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* ============================================
+   BREADCRUMB nav superior
+   ============================================ */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 36px;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.breadcrumb a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.25s;
+}
+
+.breadcrumb a:hover {
+  color: var(--accent-cyan);
+}
+
+.breadcrumb__sep {
+  opacity: 0.4;
+  font-size: 0.65rem;
+}
+
+.breadcrumb__current {
+  color: var(--accent-cyan);
+  font-weight: 500;
+}
+
+/* ============================================
+   HEADER de la página
+   ============================================ */
+.form-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.form-header__left h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 4.5vw, 2.8rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.form-header__left h1 span {
+  color: var(--accent-amber);
+  text-shadow: 0 0 28px rgba(255,179,0,0.22);
+}
+
+.form-header__sub {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 6px;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  transition: border-color 0.25s, color 0.25s, background 0.25s;
+  cursor: pointer;
+}
+
+.btn-back:hover {
+  border-color: var(--border-glow);
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
+}
+
+/* ============================================
+   TARJETA DEL FORMULARIO
+   ============================================ */
+.form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 28px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.35s;
+}
+
+.form-card:hover {
+  border-color: var(--border-glow);
+}
+
+/* Línea superior animada (misma lógica que summary-card) */
+.form-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-amber), var(--accent-cyan));
+  box-shadow: 0 0 14px rgba(255,179,0,0.3);
+}
+
+/* ============================================
+   GRUPO DE CAMPO
+   ============================================ */
+.field {
+  margin-bottom: 24px;
+}
+
+.field:last-of-type {
+  margin-bottom: 0;
+}
+
+.field__label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.field__label-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-amber);
+  box-shadow: 0 0 6px var(--accent-amber);
+}
+
+.field__required {
+  color: var(--accent-rose);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+/* ============================================
+   INPUT TEXT / TEXTAREA
+   ============================================ */
+.field__input,
+.field__textarea {
+  width: 100%;
+  background: #0e0e0e;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  padding: 12px 15px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  caret-color: var(--accent-cyan);
+}
+
+.field__input::placeholder,
+.field__textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.field__input:focus,
+.field__textarea:focus {
+  border-color: rgba(0,229,255,0.35);
+  box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+}
+
+.field__textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.5;
+}
+
+/* ============================================
+   SELECT custom (aparencia nativa restyled)
+   ============================================ */
+.field__select-wrap {
+  position: relative;
+}
+
+.field__select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #0e0e0e;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  padding: 12px 42px 12px 15px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.field__select:focus {
+  border-color: rgba(0,229,255,0.35);
+  box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+}
+
+/* flecha custom del select */
+.field__select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--text-muted);
+  pointer-events: none;
+  transition: border-top-color 0.25s;
+}
+
+.field__select-wrap:focus-within::after {
+  border-top-color: var(--accent-cyan);
+}
+
+/* opciones del select (solo en Chrome/Edge) */
+.field__select option {
+  background: #1a1a1a;
+  color: var(--text-primary);
+}
+
+/* ============================================
+   INPUT DATE
+   ============================================ */
+.field__input[type="date"] {
+  color-scheme: dark;
+}
+
+/* ============================================
+   PREVIA DE PRIORIDAD (indicador visual)
+   ============================================ */
+.prioridad-preview {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.prioridad-preview__item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s, transform 0.15s;
+  user-select: none;
+}
+
+.prioridad-preview__item:active {
+  transform: scale(0.96);
+}
+
+.prioridad-preview__item--alta {
+  background: var(--accent-rose-dim);
+  border-color: rgba(255,71,87,0.2);
+}
+
+.prioridad-preview__item--media {
+  background: var(--accent-amber-dim);
+  border-color: rgba(255,179,0,0.2);
+}
+
+.prioridad-preview__item--baja {
+  background: var(--accent-emerald-dim);
+  border-color: rgba(0,201,167,0.2);
+}
+
+.prioridad-preview__item:hover {
+  border-color: rgba(255,255,255,0.15);
+}
+
+/* activo: se marca cuando el select cambia */
+.prioridad-preview__item--alta.active   { border-color: var(--accent-rose);    box-shadow: 0 0 10px rgba(255,71,87,0.25); }
+.prioridad-preview__item--media.active  { border-color: var(--accent-amber);   box-shadow: 0 0 10px rgba(255,179,0,0.25); }
+.prioridad-preview__item--baja.active   { border-color: var(--accent-emerald); box-shadow: 0 0 10px rgba(0,201,167,0.25); }
+
+.prioridad-preview__dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+
+.prioridad-preview__item--alta .prioridad-preview__dot   { background: var(--accent-rose); }
+.prioridad-preview__item--media .prioridad-preview__dot  { background: var(--accent-amber); }
+.prioridad-preview__item--baja .prioridad-preview__dot   { background: var(--accent-emerald); }
+
+.prioridad-preview__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.prioridad-preview__item--alta .prioridad-preview__label   { color: var(--accent-rose); }
+.prioridad-preview__item--media .prioridad-preview__label  { color: var(--accent-amber); }
+.prioridad-preview__item--baja .prioridad-preview__label   { color: var(--accent-emerald); }
+
+/* ============================================
+   DIVIDER
+   ============================================ */
+.form-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 28px 0;
+}
+
+/* ============================================
+   BOTONES DE ACCIÓN
+   ============================================ */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 11px 24px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.25s, border-color 0.25s, box-shadow 0.25s, transform 0.12s;
+  outline: none;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+/* Cancelar */
+.btn--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+
+.btn--ghost:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-glow);
+  color: var(--text-primary);
+}
+
+/* Crear tarea (principal) */
+.btn--primary {
+  background: linear-gradient(135deg, #00c9a7 0%, #00e5ff 100%);
+  color: #0a0a0a;
+  border-color: transparent;
+  box-shadow: 0 2px 16px rgba(0,201,167,0.25);
+}
+
+.btn--primary:hover {
+  box-shadow: 0 4px 24px rgba(0,201,167,0.35);
+  filter: brightness(1.08);
+}
+
+.btn--primary:focus {
+  box-shadow: 0 0 0 3px rgba(0,229,255,0.25), 0 4px 20px rgba(0,201,167,0.3);
+}
+
+/* ============================================
+   MENSAJES flash (éxito / error desde Flask)
+   ============================================ */
+.flash {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  margin-bottom: 24px;
+  border: 1px solid transparent;
+}
+
+.flash--success {
+  background: var(--accent-emerald-dim);
+  border-color: rgba(0,201,167,0.25);
+  color: var(--accent-emerald);
+}
+
+.flash--error {
+  background: var(--accent-rose-dim);
+  border-color: rgba(255,71,87,0.25);
+  color: var(--accent-rose);
+}
+
+.flash__icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+/* ============================================
+   ERROR de campo individual
+   ============================================ */
+.field--error .field__input,
+.field--error .field__textarea,
+.field--error .field__select {
+  border-color: rgba(255,71,87,0.45);
+}
+
+.field__error-msg {
+  font-size: 0.7rem;
+  color: var(--accent-rose);
+  margin-top: 6px;
+  display: none;
+}
+
+.field--error .field__error-msg {
+  display: block;
+}
+
+/* ============================================
+   ANIMACIÓN entrada de la tarjeta
+   ============================================ */
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.form-card {
+  animation: cardIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.field {
+  animation: cardIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.field:nth-child(1) { animation-delay: 0.08s; }
+.field:nth-child(2) { animation-delay: 0.13s; }
+.field:nth-child(3) { animation-delay: 0.18s; }
+.field:nth-child(4) { animation-delay: 0.23s; }
